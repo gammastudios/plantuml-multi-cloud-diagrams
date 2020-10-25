@@ -28,4 +28,4 @@ Then add references to the required services from different providers...
     !includeurl AzurePuml/Networking/AzureVPNGateway.puml
     !includeurl AzurePuml/Compute/AzureVirtualMachine.puml
 ## Multi Cloud C4 Example
-![Example Multi Cloud Component Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/gamma-data/GCP-C4-PlantUML/master/examples/gcp-C4-example.puml)
+![Example Multi Cloud Component Diagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/gamma-data/plantuml-multi-cloud-diagrams/master/multi-cloud-example-plantuml-C4-diagram.puml)
