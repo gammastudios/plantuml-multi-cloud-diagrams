@@ -1,0 +1,67 @@
+@startuml
+' plantuml-multi-cloud-diagrams
+' https://github.com/gamma-data/plantuml-multi-cloud-diagrams
+
+!define C4Puml https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master
+!define GCPPuml https://raw.githubusercontent.com/gamma-data/GCP-C4-PlantUML/master/templates
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/master/dist
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/main/dist
+
+!includeurl C4Puml/C4_Context.puml
+!includeurl C4Puml/C4_Component.puml
+!includeurl C4Puml/C4_Container.puml
+!includeurl GCPPuml/GCPCommon.puml
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AWSPuml/AWSCommon.puml
+
+' GCP Resources
+!includeurl GCPPuml/Networking/CloudVPN.puml
+!includeurl GCPPuml/DataAnalytics/BigQuery.puml
+!includeurl GCPPuml/Compute/ComputeEngine.puml
+
+' Azure Resources
+!includeurl AzurePuml/Networking/AzureDNS.puml
+!includeurl AzurePuml/Networking/AzureVPNGateway.puml
+!includeurl AzurePuml/Compute/AzureVirtualMachine.puml
+
+'left to right direction
+
+title Example Multi Cloud PlantUML C4 Diagram
+
+Boundary(azure,"azure-subscription") {
+	Boundary(azurerg,"azure-resource-group") {
+		AzureDNS(adns, "Restricted VIP Records", "Azure DNS")
+		Boundary(azurevn,"azure-vnet", "10.1.0.0/16") {
+			Boundary(azuregw,"Gateway", "10.1.2.0/24") {
+				AzureVPNGateway(avpn, "VPN Gateway", "Azure VPN Gateway")
+			}
+			Boundary(azuredef,"Default", "10.1.1.0/24") {
+				AzureVirtualMachine(avm, "Tableau Desktop", "Azure Virtual Machine")
+			}
+		}
+	}
+}
+
+Boundary(gcp,"gcp-project") {
+	CloudVPN(gcpvpn, "Remote VPN Gateway", "Cloud VPN")
+	Boundary(vpc,"gcp-vpc", "10.2.0.0/16") {
+		Boundary(vpcsn,"gcp-vpc-subnet", "10.2.1.0/24") {
+			ComputeEngine(ce, "Tableau Server", "Compute Engine")
+		}
+	}
+	BigQuery(bq, "BQ Dataset", "BigQuery")
+}
+
+Rel_R(adns, avm, " ")
+Rel_L(avm, adns, " ")
+Rel_R(avm, avpn, " ")
+Rel_L(avpn, avm, " ")
+Rel_R(avpn, gcpvpn, " ")
+Rel_L(gcpvpn, avpn, " ")
+
+Rel_R(gcpvpn, ce, " ")
+Rel_L(ce, gcpvpn, " ")
+Rel_D(ce, bq, " ")
+Rel_U(bq, ce, " ")
+
+@enduml
